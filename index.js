@@ -43,6 +43,20 @@ app.post('/biodata', async (req, res) => {
     }
 });
 // put
+app.put('/biodata/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nama, nim, kelas } = req.body;
+        const result = await pool.query(
+            'UPDATE biodata SET nama=$1, nim=$2, kelas=$3 WHERE id=$4 RETURNING *',
+            [nama, nim, kelas, id]
+        );
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
 // delete
 
 app.listen(port, () => {
