@@ -14,6 +14,7 @@ const pool = new Pool({
 
 app.use(express.json());
 
+// get
 app.get('/biodata', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM biodata');
@@ -28,10 +29,24 @@ app.get('/biodata', async (req, res) => {
     }
 });
 
+// post
+app.post('/biodata', async (req, res) => {
+    try {
+        const { id, nama, nim, kelas } = req.body;
+        const result = await pool.query(
+            'INSERT INTO biodata(id, nama, nim, kelas) VALUES($1, $2, $3, $4) RETURNING *',
+            [id, nama, nim, kelas]
+        );
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+// put
+// delete
+
 app.listen(port, () => {
     console.log(`Server berjalan di http://localhost:${port}`);
 });
 
-// tambah post
-// tambah put
-// tambah delete
+
